@@ -1,0 +1,73 @@
+
+const form = document.getElementById('form')
+const username = document.getElementById('username')
+const email = document.getElementById('email')
+const password = document.getElementById('password')
+const password2 = document.getElementById('password2')
+
+// show input error message
+function showError(input, message)  {
+    const formControl = input.parentElement;
+    formControl.className = 'form-control error';
+    const small = formControl.querySelector('small');
+    small.innerText = message;
+}
+
+function checkEmail(input) {
+    const re = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/
+    if(re.test(input.value.trim())) {
+        showSuccess(input)
+    }else {
+        showError(input, 'Email is not valid')
+    }
+}
+
+function checkRequired(inputArr) {
+    inputArr.forEach(function(input) {
+        if(input.value.trim() === '') {
+            showError(input, `${getFieldName(input)} is required`)
+        } else {
+            showSuccess(input)
+        }
+    });
+}
+
+function checkLength(input, min, max) {
+    if(input.value.length < min) {
+        showError(input, `${getFieldName(input)} is too short and must be ${min}`)
+    } else if(input.value.length > max) {
+        showError(input, `${getFieldName(input)} is too long and must be ${long}`)
+    } else {
+        showSuccess(input)
+    }
+
+}
+
+// show success outline
+function showSuccess(input) {
+    const formControl = input.parentElement;
+    formControl.className = 'form-control success';
+}
+
+// event listeners
+function checkPasswordMatch(input1, input2) {
+    if(input1.value !== input2.value) {
+        showError(input2, 'Passwords do not match')
+    } else {
+        showSuccess(input2)
+    }
+}
+function getFieldName(input) {
+    return input.id.charAt(0).toUpperCase() + input.id.slice(1)
+};
+
+
+form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    checkRequired([username, email, password2,password])
+    checkLength(username, 3, 15)
+    checkLength(password, 6, 25)
+    checkEmail(email)
+    checkPasswordMatch(password2, password)
+})
